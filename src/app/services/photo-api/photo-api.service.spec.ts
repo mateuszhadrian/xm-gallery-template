@@ -55,4 +55,33 @@ describe('PhotoApiService', () => {
       },
     ]);
   });
+
+  it('should fetch photo metadata for preview and map it to model', () => {
+    let result: Photo | undefined;
+
+    service.getPhoto('10').subscribe((photoInfo) => {
+      result = photoInfo;
+    });
+
+    const req = httpMock.expectOne('https://picsum.photos/id/10/info');
+    expect(req.request.method).toBe('GET');
+    req.flush({
+      id: '10',
+      author: 'John Doe',
+      width: 300,
+      height: 400,
+      url: 'https://unsplash.com/photos/CUwuO2mxTds',
+      download_url: 'https://picsum.photos/id/10/300/400',
+    });
+
+    expect(result).toBeUndefined();
+
+    vi.advanceTimersByTime(300);
+
+    expect(result).toEqual({
+      id: '10',
+      author: 'John Doe',
+      url: 'https://picsum.photos/id/10/300/400',
+    });
+  });
 });

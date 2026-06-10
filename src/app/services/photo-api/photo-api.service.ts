@@ -18,6 +18,15 @@ export class PhotoApiService {
     );
   }
 
+  getPhoto(id: string): Observable<Photo> {
+    const url = `https://picsum.photos/id/${id}/info`;
+    const delayMs = 200 + Math.floor(Math.random() * 101);
+    return this.http.get<PicsumListItem>(url).pipe(
+      delay(delayMs),
+      map((item) => this.mapToPhoto(item)),
+    );
+  }
+
   private mapToPhoto(item: PicsumListItem): Photo {
     return {
       id: item.id,
