@@ -1,4 +1,11 @@
 <header class="header">
-  <a matFab extended routerLink="/photos">Photos</a>
-  <a matFab extended routerLink="/favorites">Favorites</a>
+  <a
+    matFab
+    extended
+    routerLink="/"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: true }"
+    >Photos</a
+  >
+  <a matFab extended routerLink="/favorites" routerLinkActive="active">Favorites</a>
 </header>

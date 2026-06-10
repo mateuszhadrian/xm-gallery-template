@@ -28,7 +28,7 @@ describe('Header', () => {
       .queryAll(By.directive(RouterLink))
       .map((de) => de.injector.get(RouterLink).href);
 
-    expect(linkButtons).toContain('/photos');
+    expect(linkButtons).toContain('/');
     expect(linkButtons).toContain('/favorites');
   });
 });

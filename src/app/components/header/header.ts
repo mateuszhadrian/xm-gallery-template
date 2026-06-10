@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { MatFabButton } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, MatFabButton],
+  imports: [RouterLink, RouterLinkActive, MatFabButton],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

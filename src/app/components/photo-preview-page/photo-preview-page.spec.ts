@@ -23,10 +23,10 @@ class FakePhotoApiService {
 }
 
 class FakeFavoritesService {
-  favorites = signal<Photo[]>([]); // store ulubionych (sygnał, jak w prawdziwym serwisie)
+  favorites = signal<Photo[]>([]);
   add = vi.fn();
   remove = vi.fn();
-  isFavorite = vi.fn(() => false);
+  isFavorite = vi.fn((photoId: string) => this.favorites().some((p) => p.id === photoId));
 }
 
 describe('PhotoPreviewPage', () => {
@@ -70,6 +70,32 @@ describe('PhotoPreviewPage', () => {
 
     expect(api.getPhoto).toHaveBeenCalledWith('10');
     expect(page.photo()).toEqual(fetched);
+  });
+
+  it('shows the remove button when the photo is in favorites', async () => {
+    favorites.favorites.set([photo('10')]);
+
+    const fixture = TestBed.createComponent(PhotoPreviewPage);
+    await fixture.whenStable();
+
+    const removeButton = fixture.debugElement
+      .queryAll(By.css('button'))
+      .find((b) => (b.nativeElement.textContent ?? '').includes('Remove'));
+
+    expect(removeButton).toBeTruthy();
+  });
+
+  it('hides the remove button when the photo is not in favorites', async () => {
+    favorites.favorites.set([]);
+
+    const fixture = TestBed.createComponent(PhotoPreviewPage);
+    await fixture.whenStable();
+
+    const removeButton = fixture.debugElement
+      .queryAll(By.css('button'))
+      .find((b) => (b.nativeElement.textContent ?? '').includes('Remove'));
+
+    expect(removeButton).toBeUndefined();
   });
 
   it('removes the photo from favorites when the button is clicked', async () => {

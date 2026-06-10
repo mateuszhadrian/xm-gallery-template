@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatFabButton } from '@angular/material/button';
 import { PhotoApiService } from '../../services/photo-api/photo-api.service';
@@ -19,6 +19,10 @@ export class PhotoPreviewPage {
   private favorites = inject(FavoritesService);
 
   readonly photo = signal<Photo | undefined>(undefined);
+  readonly isFavorite = computed(() => {
+    const photo = this.photo();
+    return photo ? this.favorites.isFavorite(photo.id) : false;
+  });
 
   constructor() {
     const id = this.route.snapshot.paramMap.get('id');

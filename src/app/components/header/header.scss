@@ -18,9 +18,14 @@
     background-color: var(--mat-sys-secondary);
     color: var(--mat-sys-on-primary);
 
-    &:hover {
+    &:hover,
+    &.active {
       background-color: var(--mat-sys-primary);
       color: var(--mat-sys-on-primary);
+    }
+
+    &.active.active {
+      box-shadow: 6px 8px 12px rgb(0 0 0 / 45%);
     }
   }
 }
