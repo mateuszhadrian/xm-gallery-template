@@ -22,6 +22,13 @@ describe('FavoritesService', () => {
     expect(service.favorites()).toEqual([]);
   });
 
+  it('should add photo and save it to local storage', () => {
+    const service = TestBed.inject(FavoritesService);
+    service.add(photoExample);
+    expect(service.isFavorite(photoExample.id)).toBe(true);
+    expect(JSON.parse(localStorage.getItem('favorites')!)).toContainEqual(photoExample);
+  });
+
   it('retrieves favorites from local storage on initialization', () => {
     localStorage.setItem('favorites', JSON.stringify([photoExample]));
     const service = TestBed.inject(FavoritesService);
