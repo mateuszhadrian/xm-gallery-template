@@ -1,0 +1,7 @@
+<div class="grid">
+  @for (photo of photos(); track photo.id) {
+    <div class="tile">
+      <img [src]="photo.url" [alt]="photo.author" />
+    </div>
+  }
+</div>
