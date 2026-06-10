@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.preview {
+  --gallery-width: 977px;
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.preview-image {
+  display: block;
+  width: 100%;
+  max-width: var(--gallery-width);
+  height: auto;
+  border-radius: 6px;
+}

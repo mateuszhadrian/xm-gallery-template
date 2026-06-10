@@ -1,1 +1,5 @@
-<p>photo-preview-page works!</p>
+@if (photo(); as photo) {
+  <div class="preview">
+    <img class="preview-image" [src]="photo.url" [alt]="photo.author" />
+  </div>
+}
