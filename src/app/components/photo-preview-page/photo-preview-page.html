@@ -2,4 +2,10 @@
   <div class="preview">
     <img class="preview-image" [src]="photo.url" [alt]="photo.author" />
   </div>
+
+  <footer class="footer">
+    <button matFab extended type="button" (click)="removeFromFavorites(photo.id)">
+      Remove from favorites
+    </button>
+  </footer>
 }

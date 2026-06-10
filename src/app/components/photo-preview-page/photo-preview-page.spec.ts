@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { By } from '@angular/platform-browser';
 import { signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -69,5 +70,20 @@ describe('PhotoPreviewPage', () => {
 
     expect(api.getPhoto).toHaveBeenCalledWith('10');
     expect(page.photo()).toEqual(fetched);
+  });
+
+  it('removes the photo from favorites when the button is clicked', async () => {
+    favorites.favorites.set([photo('10')]);
+
+    const fixture = TestBed.createComponent(PhotoPreviewPage);
+    await fixture.whenStable();
+
+    const removeButton = fixture.debugElement
+      .queryAll(By.css('button'))
+      .find((b) => (b.nativeElement.textContent ?? '').includes('Remove'));
+
+    removeButton!.triggerEventHandler('click', null);
+
+    expect(favorites.remove).toHaveBeenCalledWith('10');
   });
 });
