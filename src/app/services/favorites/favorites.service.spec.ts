@@ -1,0 +1,30 @@
+import { TestBed } from '@angular/core/testing';
+
+import { FavoritesService } from './favorites.service';
+import { Photo } from '../../interfaces/photo.interface';
+
+const photoExample: Photo = {
+  id: '10',
+  author: 'John',
+  url: 'https://picsum.photos/id/10/300/400',
+};
+
+describe('FavoritesService', () => {
+  beforeEach(() => {
+    localStorage.clear();
+    TestBed.configureTestingModule({
+      providers: [FavoritesService],
+    });
+  });
+
+  it('should fetch empty array when local storage is empty', () => {
+    const service = TestBed.inject(FavoritesService);
+    expect(service.favorites()).toEqual([]);
+  });
+
+  it('retrieves favorites from local storage on initialization', () => {
+    localStorage.setItem('favorites', JSON.stringify([photoExample]));
+    const service = TestBed.inject(FavoritesService);
+    expect(service.isFavorite(photoExample.id)).toBe(true);
+  });
+});
