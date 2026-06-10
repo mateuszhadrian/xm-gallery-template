@@ -1,59 +1,41 @@
-# XmGalleryTemplate
+# XM Gallery
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+A lightweight photo gallery application built as part of a technical assessment.
 
-## Development server
+Browse photos from the [Lorem Picsum](https://picsum.photos/) API, open any photo in a full preview, and save your favorites. Built with Angular 22, standalone components, and signals.
 
-To start a local development server, run:
+## Getting Started
 
-```bash
-ng serve
-```
+### Prerequisites
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- **Node.js** `^22.22.3 || ^24.15.0 || >=26.0.0` — required by Angular 22.
+  Older patch releases (e.g. 22.22.2) will fail, so make sure you are on a recent version. The project was developed on Node 24.
+- **npm** (bundled with Node.js)
 
-## Code scaffolding
+### Run the app locally
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. Install dependencies:
 
-```bash
-ng generate component component-name
-```
+   ```bash
+   npm install
+   ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+2. Start the development server:
 
-```bash
-ng generate --help
-```
+   ```bash
+   npm start
+   ```
 
-## Building
+3. Open your browser at [http://localhost:4200/](http://localhost:4200/).
 
-To build the project run:
+That's it — the app reloads automatically when source files change.
 
-```bash
-ng build
-```
+## Useful commands
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+| Command          | Description                          |
+| ---------------- | ------------------------------------ |
+| `npm start`      | Start the local development server   |
+| `npm run build`  | Build the project into `dist/`       |
+| `npm test`       | Run unit tests (Vitest)              |
+| `npm run lint`   | Lint the source code                 |
+| `npm run format` | Format the source code with Prettier |
