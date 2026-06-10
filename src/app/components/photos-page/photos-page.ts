@@ -1,7 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { Photo } from '../../interfaces/photo.interface';
 import { PhotoApiService } from '../../services/photo-api/photo-api.service';
 import { FavoritesService } from '../../services/favorites/favorites.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { PhotoGrid } from '../photo-grid/photo-grid';
 
 @Component({
@@ -13,6 +14,7 @@ import { PhotoGrid } from '../photo-grid/photo-grid';
 export class PhotosPage {
   private api = inject(PhotoApiService);
   private favorites = inject(FavoritesService);
+  private destroyRef = inject(DestroyRef);
 
   readonly photos = signal<Photo[]>([]);
   readonly loading = signal(false);
@@ -25,11 +27,14 @@ export class PhotosPage {
   loadNext(): void {
     this.loading.set(true);
 
-    this.api.getPhotoList(this.currentPageNumber).subscribe((batch) => {
-      this.photos.update((list) => [...list, ...batch]);
-      this.currentPageNumber++;
-      this.loading.set(false);
-    });
+    this.api
+      .getPhotoList(this.currentPageNumber)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((batch) => {
+        this.photos.update((list) => [...list, ...batch]);
+        this.currentPageNumber++;
+        this.loading.set(false);
+      });
   }
 
   onPhotoClick(photo: Photo): void {

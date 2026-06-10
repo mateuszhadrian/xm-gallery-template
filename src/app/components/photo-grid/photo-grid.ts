@@ -1,6 +1,7 @@
 import {
   afterNextRender,
   Component,
+  DestroyRef,
   ElementRef,
   inject,
   input,
@@ -20,6 +21,8 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 })
 export class PhotoGrid {
   private favorites = inject(FavoritesService);
+  private destroyRef = inject(DestroyRef);
+
   readonly photos = input.required<Photo[]>();
   readonly infiniteScroll = input(false);
   readonly loading = input(false);
@@ -46,6 +49,7 @@ export class PhotoGrid {
         },
       );
       observer.observe(sentinel.nativeElement);
+      this.destroyRef.onDestroy(() => observer.disconnect());
     });
   }
 
