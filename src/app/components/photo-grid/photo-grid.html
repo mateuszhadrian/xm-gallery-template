@@ -2,6 +2,9 @@
   @for (photo of photos(); track photo.id) {
     <button type="button" class="tile" (click)="photoClick.emit(photo)">
       <img [src]="photo.url" [alt]="photo.author" />
+      @if (isFavorite(photo.id)) {
+        <mat-icon class="star-badge">grade-icon</mat-icon>
+      }
     </button>
   }
   @if (infiniteScroll()) {

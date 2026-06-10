@@ -35,6 +35,8 @@ function fireIntersection(isIntersecting: boolean): void {
 }
 
 describe('PhotoGrid', () => {
+  let favorites: FakeFavoritesService;
+
   beforeEach(() => {
     observerCallback = undefined as unknown as IntersectionObserverCallback;
     vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
@@ -43,6 +45,8 @@ describe('PhotoGrid', () => {
       imports: [PhotoGrid],
       providers: [{ provide: FavoritesService, useClass: FakeFavoritesService }],
     });
+
+    favorites = TestBed.inject(FavoritesService) as unknown as FakeFavoritesService;
   });
 
   afterEach(() => {
@@ -69,6 +73,16 @@ describe('PhotoGrid', () => {
     fixture.debugElement.query(By.css('.tile')).triggerEventHandler('click', null);
 
     expect(clicked).toEqual([photo]);
+  });
+
+  it('renders a star badge on photos that are favorites', async () => {
+    favorites.isFavorite.mockReturnValue(true);
+
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', [photoFactory('10')]);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.star-badge')).toBeTruthy();
   });
 
   it('shows the loader only when loading is true', async () => {

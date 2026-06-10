@@ -1,14 +1,25 @@
-import { afterNextRender, Component, ElementRef, input, output, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 import { Photo } from '../../interfaces/photo.interface';
+import { FavoritesService } from '../../services/favorites/favorites.service';
+import { MatIcon } from '@angular/material/icon';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-photo-grid',
-  imports: [MatProgressSpinner],
+  imports: [MatIcon, MatProgressSpinner],
   templateUrl: './photo-grid.html',
   styleUrl: './photo-grid.scss',
 })
 export class PhotoGrid {
+  private favorites = inject(FavoritesService);
   readonly photos = input.required<Photo[]>();
   readonly infiniteScroll = input(false);
   readonly loading = input(false);
@@ -37,4 +48,6 @@ export class PhotoGrid {
       observer.observe(sentinel.nativeElement);
     });
   }
+
+  isFavorite = (id: string) => this.favorites.isFavorite(id);
 }

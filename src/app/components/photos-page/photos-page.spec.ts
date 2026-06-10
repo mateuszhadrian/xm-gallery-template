@@ -116,4 +116,14 @@ describe('PhotosPage', () => {
 
     expect(favorites.add).toHaveBeenCalledWith(photo);
   });
+
+  it('renders a star badge on photos that are already favorites', async () => {
+    api.getPhotoList.mockReturnValue(of([photoFactory('10')]));
+    favorites.isFavorite.mockReturnValue(true);
+
+    const fixture = TestBed.createComponent(PhotosPage);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.star-badge')).toBeTruthy();
+  });
 });
