@@ -15,6 +15,12 @@ describe('PhotoApiService', () => {
     });
     service = TestBed.inject(PhotoApiService);
     httpMock = TestBed.inject(HttpTestingController);
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+    httpMock.verify();
   });
 
   it('should fetch photo list from picsum and map it to data model', () => {
@@ -36,6 +42,10 @@ describe('PhotoApiService', () => {
         download_url: 'https://picsum.photos/600/400/download',
       },
     ]);
+
+    expect(result).toBeUndefined();
+
+    vi.advanceTimersByTime(300);
 
     expect(result).toEqual([
       {

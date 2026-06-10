@@ -1,5 +1,5 @@
 import { inject, Service } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { delay, map, Observable } from 'rxjs';
 import { Photo } from '../../interfaces/photo.interface';
 import { HttpClient } from '@angular/common/http';
 import { PicsumListItem } from '../../interfaces/picsum-list-item.interface';
@@ -11,9 +11,11 @@ export class PhotoApiService {
 
   getPhotoList(pageNumber: number): Observable<Photo[]> {
     const url = `https://picsum.photos/v2/list?page=${pageNumber}&limit=${PhotoApiService.PAGE_SIZE}`;
-    return this.http
-      .get<PicsumListItem[]>(url)
-      .pipe(map((items) => items.map((item) => this.mapToPhoto(item))));
+    const delayMs = 200 + Math.floor(Math.random() * 101);
+    return this.http.get<PicsumListItem[]>(url).pipe(
+      delay(delayMs),
+      map((items) => items.map((item) => this.mapToPhoto(item))),
+    );
   }
 
   private mapToPhoto(item: PicsumListItem): Photo {
