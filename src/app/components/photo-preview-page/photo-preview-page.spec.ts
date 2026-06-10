@@ -59,4 +59,15 @@ describe('PhotoPreviewPage', () => {
     expect(page.photo()).toEqual(stored);
     expect(api.getPhoto).not.toHaveBeenCalled();
   });
+
+  it('fetches the photo from the API when it is not in favorites (deep link)', () => {
+    const fetched = photo('10');
+    favorites.favorites.set([]);
+    api.getPhoto.mockReturnValue(of(fetched));
+
+    const page = TestBed.createComponent(PhotoPreviewPage).componentInstance;
+
+    expect(api.getPhoto).toHaveBeenCalledWith('10');
+    expect(page.photo()).toEqual(fetched);
+  });
 });
