@@ -1,1 +1,5 @@
-<app-photo-grid [photos]="favorites.favorites()" [infiniteScroll]="false" />
+<app-photo-grid
+  [photos]="favorites.favorites()"
+  [infiniteScroll]="false"
+  (photoClick)="onPhotoClick($event)"
+/>

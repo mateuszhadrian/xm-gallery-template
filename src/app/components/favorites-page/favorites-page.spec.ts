@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { signal } from '@angular/core';
 
@@ -61,5 +62,17 @@ describe('FavoritesPage', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('.sentinel')).toBeNull();
+  });
+
+  it('navigates to the photo preview when a tile is clicked', async () => {
+    const photo = photoFactory('10');
+    favorites.favorites.set([photo]);
+
+    const fixture = TestBed.createComponent(FavoritesPage);
+    await fixture.whenStable();
+
+    fixture.debugElement.query(By.css('.tile')).triggerEventHandler('click', null);
+
+    expect(router.navigate).toHaveBeenCalledWith(['/photos', photo.id]);
   });
 });
