@@ -16,6 +16,11 @@ export class FavoritesService {
     localStorage.setItem(FavoritesService.localStorageKey, JSON.stringify(this._favorites()));
   }
 
+  remove(photoId: string) {
+    this._favorites.update((favorites) => favorites.filter((favorite) => favorite.id !== photoId));
+    localStorage.setItem(FavoritesService.localStorageKey, JSON.stringify(this._favorites()));
+  }
+
   isFavorite(photoId: string): boolean {
     return this._favorites().some((photo) => photo.id === photoId);
   }

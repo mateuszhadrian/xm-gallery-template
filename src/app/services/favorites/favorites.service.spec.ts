@@ -36,6 +36,13 @@ describe('FavoritesService', () => {
     expect(service.favorites().length).toBe(1);
   });
 
+  it('removes photo from favorites', () => {
+    const service = TestBed.inject(FavoritesService);
+    service.add(photoExample);
+    service.remove(photoExample.id);
+    expect(service.isFavorite(photoExample.id)).toBe(false);
+  });
+
   it('retrieves favorites from local storage on initialization', () => {
     localStorage.setItem('favorites', JSON.stringify([photoExample]));
     const service = TestBed.inject(FavoritesService);
