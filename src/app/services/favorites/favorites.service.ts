@@ -11,6 +11,7 @@ export class FavoritesService {
   readonly favorites = this._favorites.asReadonly();
 
   add(photo: Photo) {
+    if (this.isFavorite(photo.id)) return;
     this._favorites.update((favorites) => [...favorites, photo]);
     localStorage.setItem(FavoritesService.localStorageKey, JSON.stringify(this._favorites()));
   }

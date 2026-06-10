@@ -29,6 +29,13 @@ describe('FavoritesService', () => {
     expect(JSON.parse(localStorage.getItem('favorites')!)).toContainEqual(photoExample);
   });
 
+  it('should not add to favorites twice', () => {
+    const service = TestBed.inject(FavoritesService);
+    service.add(photoExample);
+    service.add(photoExample);
+    expect(service.favorites().length).toBe(1);
+  });
+
   it('retrieves favorites from local storage on initialization', () => {
     localStorage.setItem('favorites', JSON.stringify([photoExample]));
     const service = TestBed.inject(FavoritesService);
