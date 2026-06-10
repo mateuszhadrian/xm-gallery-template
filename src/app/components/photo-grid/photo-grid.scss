@@ -4,11 +4,15 @@
 
 .grid {
   --tile-size: 307px;
+  --row-gap: 12px;
+  --col-gap: 28px;
 
   display: grid;
   grid-auto-flow: row;
   grid-template-columns: repeat(3, var(--tile-size));
   gap: var(--row-gap) var(--col-gap);
+  max-height: var(--photos-grid-height, calc(100vh - 100px));
+  overflow-y: auto;
   width: 100%;
   box-sizing: border-box;
   justify-content: center;
@@ -17,6 +21,7 @@
 .tile {
   position: relative;
   border-radius: 6px;
+  background: #f3f3f3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -24,9 +29,26 @@
   height: var(--tile-size);
 }
 
+.sentinel {
+  grid-column: 1 / -1;
+  height: 1px;
+}
+
 .tile img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

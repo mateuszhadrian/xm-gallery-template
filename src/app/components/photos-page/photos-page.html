@@ -1,1 +1,6 @@
-<app-photo-grid [photos]="photos()" (loadPhotos)="loadNext()" />
+<app-photo-grid
+  [photos]="photos()"
+  [loading]="loading()"
+  [infiniteScroll]="true"
+  (loadMore)="loadNext()"
+/>

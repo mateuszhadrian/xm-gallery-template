@@ -1,7 +1,16 @@
-<div class="grid">
+<div class="grid" #scrollContainer>
   @for (photo of photos(); track photo.id) {
     <div class="tile">
       <img [src]="photo.url" [alt]="photo.author" />
     </div>
   }
+  @if (infiniteScroll()) {
+    <div #sentinel class="sentinel"></div>
+  }
 </div>
+
+<footer class="footer" aria-live="polite">
+  @if (loading()) {
+    <mat-spinner class="loader" diameter="48" aria-label="Loading more photos"></mat-spinner>
+  }
+</footer>

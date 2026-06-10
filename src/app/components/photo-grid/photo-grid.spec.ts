@@ -1,10 +1,9 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
-import { Observable, of } from 'rxjs';
-import { PhotoApiService } from '../../services/photo-api/photo-api.service';
+
+import { PhotoGrid } from './photo-grid';
 import { FavoritesService } from '../../services/favorites/favorites.service';
 import { Photo } from '../../interfaces/photo.interface';
-import { PhotosPage } from '../photos-page/photos-page';
 
 const photoFactory = (id: string): Photo => ({
   id,
@@ -12,39 +11,103 @@ const photoFactory = (id: string): Photo => ({
   url: `https://picsum.photos/id/${id}/200/300`,
 });
 
-class FakePhotoApiService {
-  getPhotoList = vi.fn((_pageNumber: number): Observable<Photo[]> => of([]));
-  getPhoto = vi.fn((id: string): Observable<Photo> => of(photoFactory(id)));
-}
-
 class FakeFavoritesService {
   add = vi.fn<(photo: Photo) => void>();
-  remove = vi.fn<(id: string) => void>();
+  remove = vi.fn<(photo: Photo) => void>();
   isFavorite = vi.fn((_id: string): boolean => false);
 }
 
-describe('PhotosPage', () => {
-  let api: FakePhotoApiService;
+let observerCallback: IntersectionObserverCallback;
 
+class MockIntersectionObserver {
+  constructor(cb: IntersectionObserverCallback) {
+    observerCallback = cb;
+  }
+  observe = vi.fn();
+  unobserve = vi.fn();
+  disconnect = vi.fn();
+  takeRecords = vi.fn(() => []);
+}
+
+function fireIntersection(isIntersecting: boolean): void {
+  observerCallback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver);
+}
+
+describe('PhotoGrid', () => {
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [PhotosPage],
-      providers: [
-        { provide: PhotoApiService, useClass: FakePhotoApiService },
-        { provide: FavoritesService, useClass: FakeFavoritesService },
-      ],
-    });
+    observerCallback = undefined as unknown as IntersectionObserverCallback;
+    vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
 
-    api = TestBed.inject(PhotoApiService) as unknown as FakePhotoApiService;
+    TestBed.configureTestingModule({
+      imports: [PhotoGrid],
+      providers: [{ provide: FavoritesService, useClass: FakeFavoritesService }],
+    });
   });
 
-  it('loads the first page of photos on initialization', async () => {
-    api.getPhotoList.mockReturnValue(of([photoFactory('10'), photoFactory('20')]));
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
 
-    const fixture = TestBed.createComponent(PhotosPage);
+  it('renders one tile per photo', async () => {
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', [photoFactory('10'), photoFactory('20')]);
     await fixture.whenStable();
 
-    expect(api.getPhotoList).toHaveBeenCalledWith(1);
     expect(fixture.nativeElement.querySelectorAll('.tile').length).toBe(2);
+  });
+
+  it('shows the loader only when loading is true', async () => {
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', []);
+    fixture.componentRef.setInput('loading', false);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.loader')).toBeNull();
+
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.loader')).toBeTruthy();
+  });
+
+  it('does not render a sentinel and never emits loadMore when infiniteScroll is false', async () => {
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', [photoFactory('10')]);
+    fixture.componentRef.setInput('infiniteScroll', false);
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.sentinel')).toBeNull();
+    expect(observerCallback).toBeUndefined();
+  });
+
+  it('emits loadMore when the sentinel intersects and infiniteScroll is true', async () => {
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', [photoFactory('10')]);
+    fixture.componentRef.setInput('infiniteScroll', true);
+    await fixture.whenStable();
+
+    const loadMore = vi.fn();
+    fixture.componentInstance.loadMore.subscribe(loadMore);
+
+    expect(fixture.nativeElement.querySelector('.sentinel')).toBeTruthy();
+
+    fireIntersection(true);
+
+    expect(loadMore).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not emit loadMore while loading', async () => {
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', [photoFactory('10')]);
+    fixture.componentRef.setInput('infiniteScroll', true);
+    fixture.componentRef.setInput('loading', true);
+    await fixture.whenStable();
+
+    const loadMore = vi.fn();
+    fixture.componentInstance.loadMore.subscribe(loadMore);
+
+    fireIntersection(true);
+
+    expect(loadMore).not.toHaveBeenCalled();
   });
 });

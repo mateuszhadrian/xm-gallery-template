@@ -11,11 +11,22 @@ import { PhotoGrid } from '../photo-grid/photo-grid';
 })
 export class PhotosPage {
   private api = inject(PhotoApiService);
+
   readonly photos = signal<Photo[]>([]);
+  readonly loading = signal(false);
+  private currentPageNumber = 1;
+
+  constructor() {
+    this.loadNext();
+  }
 
   loadNext(): void {
-    this.api.getPhotoList(1).subscribe((batch) => {
+    this.loading.set(true);
+
+    this.api.getPhotoList(this.currentPageNumber).subscribe((batch) => {
       this.photos.update((list) => [...list, ...batch]);
+      this.currentPageNumber++;
+      this.loading.set(false);
     });
   }
 }
