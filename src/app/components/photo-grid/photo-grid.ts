@@ -13,6 +13,7 @@ export class PhotoGrid {
   readonly infiniteScroll = input(false);
   readonly loading = input(false);
 
+  readonly photoClick = output<Photo>();
   readonly loadMore = output<void>();
 
   private sentinel = viewChild<ElementRef<HTMLElement>>('sentinel');

@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Observable, of, Subject } from 'rxjs';
 
 import { PhotosPage } from './photos-page';
@@ -42,6 +43,8 @@ function fireIntersection(isIntersecting: boolean): void {
 
 describe('PhotosPage', () => {
   let api: FakePhotoApiService;
+  let favorites: FakeFavoritesService;
+
   beforeEach(() => {
     vi.stubGlobal('IntersectionObserver', MockIntersectionObserver);
 
@@ -54,6 +57,7 @@ describe('PhotosPage', () => {
     });
 
     api = TestBed.inject(PhotoApiService) as unknown as FakePhotoApiService;
+    favorites = TestBed.inject(FavoritesService) as unknown as FakeFavoritesService;
   });
 
   afterEach(() => {
@@ -99,5 +103,17 @@ describe('PhotosPage', () => {
 
     expect(api.getPhotoList).toHaveBeenCalledWith(2);
     expect(api.getPhotoList).toHaveBeenCalledTimes(2);
+  });
+
+  it('adds a photo to favorites when its tile is clicked', async () => {
+    const photo = photoFactory('10');
+    api.getPhotoList.mockReturnValue(of([photo]));
+
+    const fixture = TestBed.createComponent(PhotosPage);
+    await fixture.whenStable();
+
+    fixture.debugElement.query(By.css('.tile')).triggerEventHandler('click', null);
+
+    expect(favorites.add).toHaveBeenCalledWith(photo);
   });
 });

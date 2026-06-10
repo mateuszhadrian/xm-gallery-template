@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Photo } from '../../interfaces/photo.interface';
 import { PhotoApiService } from '../../services/photo-api/photo-api.service';
+import { FavoritesService } from '../../services/favorites/favorites.service';
 import { PhotoGrid } from '../photo-grid/photo-grid';
 
 @Component({
@@ -11,6 +12,7 @@ import { PhotoGrid } from '../photo-grid/photo-grid';
 })
 export class PhotosPage {
   private api = inject(PhotoApiService);
+  private favorites = inject(FavoritesService);
 
   readonly photos = signal<Photo[]>([]);
   readonly loading = signal(false);
@@ -28,5 +30,9 @@ export class PhotosPage {
       this.currentPageNumber++;
       this.loading.set(false);
     });
+  }
+
+  onPhotoClick(photo: Photo): void {
+    this.favorites.add(photo);
   }
 }

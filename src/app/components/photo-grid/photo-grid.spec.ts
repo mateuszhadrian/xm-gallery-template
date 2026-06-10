@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
 import { PhotoGrid } from './photo-grid';
 import { FavoritesService } from '../../services/favorites/favorites.service';
@@ -54,6 +55,20 @@ describe('PhotoGrid', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelectorAll('.tile').length).toBe(2);
+  });
+
+  it('emits photoClick with the photo when a tile is clicked', async () => {
+    const photo = photoFactory('10');
+    const fixture = TestBed.createComponent(PhotoGrid);
+    fixture.componentRef.setInput('photos', [photo]);
+    await fixture.whenStable();
+
+    const clicked: Photo[] = [];
+    fixture.componentInstance.photoClick.subscribe((p) => clicked.push(p));
+
+    fixture.debugElement.query(By.css('.tile')).triggerEventHandler('click', null);
+
+    expect(clicked).toEqual([photo]);
   });
 
   it('shows the loader only when loading is true', async () => {

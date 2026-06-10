@@ -1,8 +1,8 @@
 <div class="grid" #scrollContainer>
   @for (photo of photos(); track photo.id) {
-    <div class="tile">
+    <button type="button" class="tile" (click)="photoClick.emit(photo)">
       <img [src]="photo.url" [alt]="photo.author" />
-    </div>
+    </button>
   }
   @if (infiniteScroll()) {
     <div #sentinel class="sentinel"></div>
